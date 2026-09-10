@@ -1,69 +1,61 @@
 # The φ-Lattice: A Geometric Theory of Language and Computation
 
-## A Comprehensive Reference
+What if a language model isn't a statistical machine at all — but a navigator moving through a geometric space?
+
+This book traces a research program that started with that question and ended somewhere unexpected: a working transformer that runs on pure integer arithmetic, with no floating-point operations in its hot path. Along the way it touches number theory, crystallography, dynamical systems, and hardware design.
 
 ---
 
-## Sections
+## The core idea
 
-| # | Title | Status |
-|---|-------|--------|
-| 01 | [The φ-Lattice: Foundation](sections/01_phi_lattice.md) | ✅ Complete |
-| 02 | The Vacuum Forming Hypothesis | ✅ Complete |
-| 03 | Phase-Shift Probing and Geometric Invariants | ✅ Complete |
-| 04 | The 16D Toroid-Tetrix | ✅ Complete |
-| 05 | Style Is Geometry | ✅ Complete |
-| 06 | Navigation Replaces Inference | ✅ Complete |
-| 07 | Chirality and the Geometric Signature | ✅ Complete |
-| 08 | The T Transformation (Softmax Geometry) | ✅ Complete |
-| 09 | φ-Integer Arithmetic and the Pure Integer Transformer | ✅ Complete |
-| 10 | The ±4096 Clip Bottleneck | ✅ Complete |
-| 11 | The Coefficient Accumulation Engine | ✅ Complete |
-| 12 | The Zeta Connection | ✅ Complete |
-| 13 | The Resonant Language Model | ✅ Complete |
-| 14 | Echion: The Intentional LLM | ✅ Complete |
-| 15 | Templates Are Geometry | ✅ Complete |
-| 16 | The Wall-Breaking Protocol | ✅ Complete |
-| 17 | φ-Zipf and the Zipf Connection | ✅ Complete |
-| 18 | The Heegner Subspace | ✅ Complete |
-| 19 | Hardware Implications: The φ-FPU | ✅ Complete |
-| 20 | Open Problems and Future Directions | ✅ Complete |
+Every number in a neural network can be written as a power of the golden ratio:
 
-## Appendices
+```
+value = sign × φ^(exponent / k)
+```
 
-| # | Title | Status |
-|---|-------|--------|
-| A | Sign Convention Reference | - |
-| B | Layer-by-Layer Chirality Data | - |
-| C | The φ-Geist Library Reference | - |
-| D | Configuration Guide: When to Use Each Dimensionality | - |
+On this **φ-lattice**, multiplication becomes integer addition — an XOR gate plus an adder, in a single cycle. Addition becomes accumulation of Fibonacci coefficients. The transcendental functions that normally require expensive hardware (exp, sqrt, sigmoid) turn out to have exact or near-exact integer forms.
 
----
+The result: a complete 24-layer transformer doing real inference with nothing but integer ops and a 9 KB lookup table.
 
-## Repository Layout
+## What's inside
+
+The book is organized as 20 self-contained sections:
+
+**Foundations** — the φ-lattice itself, the hypothesis that training captures only the *surface* of semantic structure, and a crystallography-inspired method for telling surface patterns from geometric truth.
+
+**Geometry** — language as a 16-dimensional phase space living on a torus, style (literary, ethical, visual) as positions in a navigable space, and the discovery that inference is better understood as *navigation* than computation.
+
+**Computation** — the integer transformer in full: Fibonacci-based accumulation, a transformation that makes lattice softmax exactly match float softmax, the elimination of the last floating-point operations, and the engine that defers rounding until the final output.
+
+**Connections** — Riemann zeta zeros as deterministic hash functions, a zero-parameter language model built from a single primitive, an intentional LLM with explicit beliefs, and the golden ratio showing up in word frequencies.
+
+**Frontier** — Heegner numbers hiding in the coefficient space, a hardware design 24× more energy-efficient than floating point, and twelve open problems.
+
+## Using this repo
+
+Each section pairs mathematical exposition with runnable code:
 
 ```
 book/
-├── README.md                    ← You are here
-├── sections/                    ← One markdown file per section
-│   ├── 01_phi_lattice.md
-│   ├── 02_vacuum_forming.md
-│   └── ...
-├── code/                        ← Self-contained Python scripts
-│   ├── 01_lattice_demo.py
-│   ├── 02_phase_probing.py
-│   └── ...
-└── figures/                     ← Generated figures (PNG)
-    ├── 01_phi_lattice_spacing.png
-    ├── 01_phi_self_similarity.png
-    └── ...
+├── README.md          ← you are here
+├── sections/          ← the 20 chapters (start with 01)
+├── code/              ← one Python script per section
+└── figures/           ← output of running the scripts
 ```
 
-## Usage
-
-Each section is self-contained. The matching code script in `code/` generates the figures in `figures/` and demonstrates the mathematics with working examples. To rebuild all figures:
+Read straight through from `sections/01_phi_lattice.md`, or jump to whatever catches your eye. To regenerate any figure, run its script:
 
 ```bash
-cd book
-for script in code/??_*.py; do python3 "$script"; done
+python3 code/01_lattice_demo.py
 ```
+
+Most scripts need only NumPy and Matplotlib. A few load real models (Qwen2-0.5B, BERT) from HuggingFace — those fall back to built-in demonstrations if the dependencies aren't installed.
+
+## Status and honesty
+
+This is a research record, not a polished textbook. Some sections demonstrate mathematical frameworks with synthetic data; others measure real models. Where the code shows a concept rather than proving a claim, the text says so. The strongest results — the integer transformer running real weights, the exact softmax transformation — are reproducible from the scripts here.
+
+## License
+
+GPLv3 — see [LICENSE](LICENSE).
