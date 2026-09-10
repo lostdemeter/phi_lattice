@@ -1,0 +1,6 @@
+# Working files — generated artifacts, not part of the readable book
+code/
+figures/
+__pycache__/
+*.pyc
+.pytest_cache/
