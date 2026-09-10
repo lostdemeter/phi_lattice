@@ -13,44 +13,69 @@ FIGURES_DIR.mkdir(parents=True, exist_ok=True)
 
 def generate_figure():
     print("\nGenerating Figure 20.1: Open Problems Landscape...")
-    fig, ax = plt.subplots(figsize=(14, 10))
-    ax.set_xlim(0, 10); ax.set_ylim(0, 10); ax.axis("off")
+    from matplotlib.patches import FancyBboxPatch
 
-    problems = [
-        (5, 9.2, "Lattice-Native\nRMSNorm", "#e74c3c", "Hard", "60% error"),
-        (2, 8.0, "Optimal\nResolution k", "#f39c12", "Medium", "k=896 dip"),
-        (8, 8.0, "Lattice-Native\nTraining", "#e74c3c", "Hard", "No gradients"),
-        (5, 7.0, "Template →\nTetrix Dissolution", "#3498db", "Medium", "Geo. select"),
-        (8, 6.5, "Unified Human +\nLearned Structure", "#e74c3c", "Hard", "3 universals"),
-        (2, 5.5, "Chirality →\nT⁴ Topology", "#3498db", "Medium", "Isoclinic rot."),
-        (5, 5.0, "Causal Zipf:\nln(φ) Explanation", "#2ecc71", "Easier", "Testable"),
-        (8, 4.5, "Continuous\nPascal Dimension", "#9b59b6", "Speculative", "d=2.5+"),
-        (2, 3.5, "Feigenbaum\nConnection", "#9b59b6", "Speculative", "δ≈4.669"),
-        (5, 3.0, "k > 256:\nHigher Resolution", "#f39c12", "Medium", "k=2048 works"),
-        (8, 2.0, "Multi-Model\nφ-Interoperability", "#2ecc71", "Easier", "φ-score=1.0"),
-        (5, 1.0, "Hardware\nImplementation", "#2ecc71", "Easier", "FPGA→ASIC"),
+    groups = [
+        ("Hard", "#e74c3c", [
+            ("Lattice-Native\nRMSNorm", "60% of remaining error"),
+            ("Lattice-Native\nTraining", "No φ-gradient descent yet"),
+            ("Unified Human +\nLearned Structure", "Bridging the 3 universals"),
+        ]),
+        ("Medium", "#e67e22", [
+            ("Optimal\nResolution k", "k=896 cancellation dip"),
+            ("Template →\nTetrix Dissolution", "Geometric selection exists"),
+            ("Chirality →\nT⁴ Topology", "Isoclinic rotation catalog"),
+            ("k > 256:\nHigher Resolution", "k=2048 works, needs speed"),
+        ]),
+        ("Easier", "#27ae60", [
+            ("Causal Zipf:\nln(φ) Explanation", "Testable prediction"),
+            ("Multi-Model\nφ-Interoperability", "φ-score = 1.0 on 4 models"),
+            ("Hardware\nImplementation", "FPGA → ASIC path"),
+        ]),
+        ("Speculative", "#8e44ad", [
+            ("Continuous\nPascal Dimension", "d = 2.5+ ?"),
+            ("Feigenbaum\nConnection", "φ≈4.854 vs δ=4.669"),
+        ]),
     ]
 
-    for x, y, label, color, difficulty, note in problems:
-        rect = plt.Rectangle((x-1.5, y-0.4), 3, 0.8, fill=True,
-                             facecolor=color, alpha=0.15,
-                             edgecolor=color, linewidth=2,
-                             linestyle="-" if difficulty == "Hard" else
-                                       "--" if difficulty == "Medium" else ":")
-        ax.add_patch(rect)
-        ax.text(x, y, label, ha="center", va="center", fontsize=8,
-                fontweight="bold", color=color)
-        ax.text(x + 1.6, y, f"[{difficulty}]\n{note}", fontsize=6,
-                color="gray", va="center")
+    fig, ax = plt.subplots(figsize=(14, 8))
+    ax.set_xlim(0, 12)
+    ax.set_ylim(0, 10)
+    ax.axis("off")
 
-    # Legend
-    ax.text(0.5, 9.7, "Difficulty:", fontsize=9, fontweight="bold")
-    for i, (label, color, ls) in enumerate([
-        ("Hard", "#e74c3c", "-"), ("Medium", "#f39c12", "--"),
-        ("Easier", "#2ecc71", ":"), ("Speculative", "#9b59b6", "-.")]):
-        ax.plot([1.5 + i*1.8, 1.8 + i*1.8], [9.7, 9.7], color=color,
-                linewidth=2, linestyle=ls)
-        ax.text(1.9 + i*1.8, 9.7, label, fontsize=8, color=color, va="center")
+    n_cols = len(groups)
+    margin, gap = 0.3, 0.3
+    col_w = (12 - 2 * margin - (n_cols - 1) * gap) / n_cols
+    card_h, card_gap = 1.55, 0.22
+    top = 8.55  # top edge of first card row
+
+    for c, (difficulty, color, items) in enumerate(groups):
+        x0 = margin + c * (col_w + gap)
+
+        # Column header band
+        ax.add_patch(FancyBboxPatch(
+            (x0, 9.0), col_w, 0.7, boxstyle="round,pad=0.02",
+            facecolor=color, edgecolor=color, alpha=0.9))
+        ax.text(x0 + col_w / 2, 9.35,
+                f"{difficulty} ({len(items)})",
+                ha="center", va="center", fontsize=11,
+                fontweight="bold", color="white")
+
+        # Cards, stacked from the top
+        for i, (title, note) in enumerate(items):
+            y1 = top - i * (card_h + card_gap)
+            y0 = y1 - card_h
+            ax.add_patch(FancyBboxPatch(
+                (x0, y0), col_w, card_h, boxstyle="round,pad=0.02",
+                facecolor="white", edgecolor=color, linewidth=1.8))
+            ax.text(x0 + col_w / 2, y0 + card_h - 0.42, title,
+                    ha="center", va="top", fontsize=9,
+                    fontweight="bold", color=color, linespacing=1.3)
+            ax.text(x0 + col_w / 2, y0 + 0.18, note,
+                    ha="center", va="bottom", fontsize=7.5, color="gray")
+
+    ax.text(6, 0.35, "Grouped by expected difficulty — see Section 20 for details.",
+            ha="center", va="center", fontsize=8, color="gray", style="italic")
 
     ax.set_title("Open Problems: The Research Frontier",
                  fontsize=15, fontweight="bold", y=1.02)
