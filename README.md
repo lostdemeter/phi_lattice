@@ -18,6 +18,13 @@ On this **φ-lattice**, multiplication becomes integer addition — an XOR gate 
 
 The result: a complete 24-layer transformer doing real inference with nothing but integer ops and a 9 KB lookup table.
 
+## Read the white paper
+
+**[📄 The φ-Lattice white paper (PDF, 148 pages)](whitepaper/whitepaper.pdf)**
+
+The full book as a single printable document — all 20 sections with figures. Click to read it right here in your browser.
+
+---
 ## What's inside
 
 The book is organized as 20 self-contained sections:
